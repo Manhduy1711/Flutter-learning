@@ -24,11 +24,14 @@ class CircleColor extends StatelessWidget{
 }
 
 class ColorPicker extends StatefulWidget {
+  final Function(Color) callback;
+  ColorPicker({required this.callback});
   @override
   State<ColorPicker> createState() => _ColorPicker();
 }
 
 class _ColorPicker extends State<ColorPicker> {
+
   List<Color> colors = [
     Color(0xFFFFFF99),
     Color(0xFFCCFFFF),
@@ -49,12 +52,17 @@ class _ColorPicker extends State<ColorPicker> {
   }
   @override
   Widget build(BuildContext context) {
+    widget.callback(_mainColor);
     return GridView.count(
       crossAxisCount: 5,
       shrinkWrap: true,
       crossAxisSpacing: 20,
       mainAxisSpacing: 10,
-      children: colors.map((color) => CircleColor(color: color, isSelected: _mainColor == color, onColorChoose: (_)=> _onColorChoose(color),)).toList(),
+      children: colors.map((color) => CircleColor(
+        color: color,
+        isSelected: _mainColor == color,
+        onColorChoose: (_)=> _onColorChoose(color),
+      )).toList(),
     );
   }
 }

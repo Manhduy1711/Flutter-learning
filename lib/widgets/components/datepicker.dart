@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DatePicker extends StatefulWidget {
+  final Function(DateTime) callback;
+  DatePicker({required this.callback});
 
   State<DatePicker> createState() => _DatePicker();
 
@@ -23,10 +25,11 @@ class _DatePicker extends State<DatePicker>{
   }
   @override
   Widget build(BuildContext context) {
+    widget.callback(selectedDate);
     return InkWell(
       onTap: () => {_selectDate(context)},
       child: Container(
-        padding: EdgeInsets.all(24),
+        padding: EdgeInsets.symmetric(vertical: 24, horizontal: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(24)),
           border: Border.all(

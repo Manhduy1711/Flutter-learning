@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:midterm_todoapp/models/ToDoItem.dart';
+import 'package:midterm_todoapp/widgets/taskdetail.dart';
 
 class ListItem extends StatelessWidget {
   final ToDoItem item;
 
   const ListItem({required this.item});
-
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(20),
       child: GestureDetector(
-        onTap: () => {print("Duy")},
+        onTap: () => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TaskDetail(item: item))
+          )
+        },
         child: Container(
           constraints: const BoxConstraints(
               minHeight: 40,
@@ -29,7 +36,7 @@ class ListItem extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
-                        color: Color(int.parse("0xff"+ item.color))
+                        color: item.status == "Expire" ? Colors.red : item.color
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,12 +44,20 @@ class ListItem extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            item.title,
-                            style: const TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          child: Wrap(
+                            children: [
+                              Text(
+                                item.title,
+                                style: const TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Offstage(
+                                offstage: item.status == "Expire" ? false: true,
+                                child: Icon(FontAwesomeIcons.warning, color: Colors.yellow, size: 40,),
+                              )
+                            ],
                           ),
                         ),
                         Padding(
@@ -55,12 +70,24 @@ class ListItem extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Text(
-                          item.deadline,
-                          style: const TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w500
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              DateFormat.yMd().format(item.deadlineDay),
+                              style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w500
+                              ),
+                            ),
+                            SizedBox(width: 10,),
+                            Text(
+                              item.deadlineTime.format(context),
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w500
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -72,7 +99,7 @@ class ListItem extends StatelessWidget {
                       margin: const EdgeInsets.only(left: 4),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: Color(int.parse("0xff"+ item.color))
+                          color: item.status == "Expire" ? Colors.red : item.color
                       ),
                       alignment: Alignment.center,
                       child: RotatedBox(

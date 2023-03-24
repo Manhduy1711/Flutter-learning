@@ -1,9 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:midterm_todoapp/models/ToDoItem.dart';
 import 'package:midterm_todoapp/widgets/components/colorpicker.dart';
 import 'package:midterm_todoapp/widgets/components/datepicker.dart';
 import 'package:midterm_todoapp/widgets/components/timepicker.dart';
+import 'package:midterm_todoapp/widgets/createtasks.dart';
+import 'package:midterm_todoapp/widgets/homepage.dart';
 
-class CreateTask extends StatelessWidget{
+class CreateTask extends StatefulWidget {
+
+  @override
+  State<CreateTask> createState() => _CreateTask();
+}
+
+class _CreateTask extends State<CreateTask>{
+  DateTime? dateTime;
+  TimeOfDay? time;
+  Color? color;
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
+  bool isTitleValidate = true;
+  bool isDesValidate = true;
+
+  ToDoItem item() {
+    return ToDoItem(this.titleController.text, this.descriptionController.text, this.dateTime!, this.time!, this.color!);
+  }
+
+  void validation () {
+    if(titleController.text == "" || descriptionController.text == "") {
+      setState(() {
+        isTitleValidate = false;
+        isDesValidate = false;
+      });
+    }
+    else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Homepage.withAction(action: "add", item: item(),))
+      );
+    }
+  }
+
+  void onChangeHanldeTitle () {
+    if (titleController.text != "" && isTitleValidate == false) {
+      setState(() {
+        isTitleValidate = true;
+      });
+    }
+  }
+
+  void onChangeHanldeDes () {
+    if (descriptionController.text != "" && isDesValidate == false) {
+      setState(() {
+        isDesValidate = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +82,9 @@ class CreateTask extends StatelessWidget{
                           ),
                       ),
                       ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            validation();
+                          },
                           child: Text("Save", style: TextStyle(color: Colors.black, fontSize: 28),),
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -43,14 +97,22 @@ class CreateTask extends StatelessWidget{
                     ],
                   ),
                 SizedBox(height: 20,),
-                const Text("Task title"),
+                Text(
+                    "Task title",
+                    style: TextStyle(
+                      color: isTitleValidate == false ? Colors.red : Colors.black,
+                      fontSize: 20
+                    )
+                ),
                 SizedBox(height: 10,),
                 TextField(
+                  onChanged: (_) => {onChangeHanldeTitle()},
+                  controller: titleController,
                   decoration: InputDecoration(hintText: "Task title",
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(18.0),
                       borderSide: BorderSide(
-                        color: Color(0xFFFAEDC8), width: 3.0,),
+                        color: isTitleValidate == false ? Colors.red : Color(0xFFFAEDC8) , width: 3.0,),
                     )
                   ),
                 ),
@@ -60,26 +122,40 @@ class CreateTask extends StatelessWidget{
                     Expanded(flex: 8,child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Date"),
+                        const Text("Date", style: TextStyle(fontSize: 20),),
                         SizedBox(height: 10,),
-                        DatePicker(),
+                        DatePicker( callback: (data) {
+                          dateTime = data;
+                        },
+
+                        ),
                       ],
                     )),
                     Expanded(flex:1,child: SizedBox(width: 10,)),
                     Expanded(flex: 8, child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Time"),
+                        const Text("Time", style: TextStyle(fontSize: 24),),
                         SizedBox(height: 10,),
-                        TimePicker()
+                        TimePicker( callback: (data) {
+                          time = data;
+                        },)
                       ],
                     ))
                   ],
                 ),
                 SizedBox(height: 20,),
-                const Text("Description"),
+                Text(
+                    "Description",
+                    style: TextStyle(
+                      color: isDesValidate == false ? Colors.red : Colors.black,
+                      fontSize: 20
+                    ),
+                ),
                 SizedBox(height: 10,),
                 TextField(
+                  onChanged: (_) => {onChangeHanldeDes()},
+                  controller: descriptionController,
                   minLines: 6,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
@@ -89,13 +165,15 @@ class CreateTask extends StatelessWidget{
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18.0),
                         borderSide: BorderSide(
-                            color: Color(0xFFFAEDC8), width: 3.0,),
+                            color: isDesValidate == false ? Colors.red : Color(0xFFFAEDC8), width: 3.0,),
                     ),
                   ),
                 ),
                 SizedBox(height: 20,),
-                const Text("Color"),
-                ColorPicker()
+                const Text("Color", style: TextStyle(fontSize: 20),),
+                ColorPicker( callback: (data) {
+                  color = data;
+                },)
 
               ],
             ),

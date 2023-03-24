@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TimePicker extends StatefulWidget {
-
+final Function(TimeOfDay) callback;
+TimePicker({required this.callback});
   State<TimePicker> createState() => _TimePicker();
 
 }
@@ -23,6 +24,7 @@ class _TimePicker extends State<TimePicker>{
   }
   @override
   Widget build(BuildContext context) {
+    widget.callback(selectedTime);
     return InkWell(
       onTap: () => {_selectDate(context)},
       child: Container(

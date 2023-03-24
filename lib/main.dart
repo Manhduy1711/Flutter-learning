@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import './widgets/homepage.dart';
 void main() {
   runApp(const MyApp());
@@ -14,6 +15,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.rubikTextTheme(
+          Theme.of(context).textTheme
+        )
       ),
       home: Homepage(),
     );
